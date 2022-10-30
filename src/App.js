@@ -1,23 +1,35 @@
-import logo from './logo.svg';
 import './App.css';
+import {useEffect, useRef, useState} from "react";
 
 function App() {
+
+  const [editMode, setEditMode] = useState(false);
+
+  const handleEditMode = (e) => {
+    e.stopPropagation()
+    setEditMode(true);
+  }
+
+  const modalElementRef = useRef(null);
+
+  useEffect( () => {
+    const handleOutsideClick = (e) => {
+      if (modalElementRef.current && !modalElementRef.current.contains(e.target)){
+        setEditMode(false);
+      }
+    }
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick)
+  } )
+
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+      { editMode ? <div ref={modalElementRef} > EditMode </div> : <div> <button onClick={ handleEditMode } > Go Edit mode </button>  Not edit mode </div> }
+
+
     </div>
   );
 }
